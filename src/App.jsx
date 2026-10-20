@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Home from './pages/Home.jsx'
+import Systems from './pages/Systems.jsx'
 import { SYSTEMS } from './data/systems.js'
 import { useParams } from 'react-router-dom'
 
@@ -20,6 +21,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/systems" element={<Systems />} />
       <Route path="/explore/:system" element={<ExploreRoute />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

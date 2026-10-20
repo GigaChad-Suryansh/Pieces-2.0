@@ -24,7 +24,8 @@ button { font: inherit; color: inherit; }
 .loading { display: grid; place-items: center; height: 100%; color: var(--steel); }
 
 /* ---------- Home ---------- */
-.home { position: relative; height: 100%; overflow: hidden; }
+.page { height: 100%; overflow-y: auto; overflow-x: hidden; }
+.home { position: relative; height: 100svh; overflow: hidden; }
 .topbar {
   position: absolute; inset: 0 0 auto 0; z-index: 5;
   display: flex; justify-content: space-between; align-items: center;
@@ -163,3 +164,8 @@ input[type='range'] { width: 100%; accent-color: var(--ember); }
   .side { overflow: visible; }
   .related { display: none; }
 }
+
+.view-controls { position: absolute; right: max(16px, 3vw); bottom: max(24px, 5vh); z-index: 5; display: flex; gap: 8px; }
+.view-controls .btn { min-width: 40px; }
+.systems-page { height: 100%; position: relative; }
+.systems-back { position: absolute; left: max(16px, 2vw); top: 16px; z-index: 30; background: rgb(13 17 22 / 0.7); }

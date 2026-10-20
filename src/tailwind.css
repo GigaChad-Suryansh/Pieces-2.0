@@ -1,0 +1,6 @@
+/* Tailwind without its preflight reset, so the existing hand-written styles are untouched. */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* The site is dark-only, so `dark:` classes always apply. */
+@custom-variant dark (&:where(*));

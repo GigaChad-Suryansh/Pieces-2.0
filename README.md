@@ -11,9 +11,16 @@ Explore a car in 3D, hover a system, and open a dedicated simulator for it.
 |---|---|---|
 | 1 | Homepage car, hover detection, route to engine | done |
 | 2 | Engine simulator | done |
+| B | Visual polish: halftone footer on the homepage, perspective-tunnel systems page at `/systems` | done |
 | 3 | Transmission, brakes, suspension, electrical | planned |
 | 4 | EV, cooling, steering | planned |
 | 5 | Polish, performance, mobile, deploy | planned |
+
+## Tooling notes
+- Tailwind v4 is loaded **without its preflight reset** (`src/tailwind.css`) so the hand-written styles in `src/styles.css` are unchanged. Add `no-underline` to Tailwind-styled links.
+- `src/components/ui/*.tsx` are TypeScript; the rest of the app is JS. `npx tsc --noEmit` checks the TS files.
+- Footer links are plain anchors (full page load). Host with an SPA fallback so deep links like `/explore/engine` resolve.
+- On the homepage the mouse wheel scrolls the page, so camera zoom uses the +/− buttons.
 
 ## Known limitation
 The car and engine are built procedurally from primitives, not a downloaded GLB. This keeps every part

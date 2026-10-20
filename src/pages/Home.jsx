@@ -4,6 +4,7 @@ import { ContactShadows, Environment, Lightformer, OrbitControls } from '@react-
 import { Link } from 'react-router-dom'
 import * as THREE from 'three'
 import Car from '../car/Car.jsx'
+import HalftoneWordmarkFooter from '@/components/ui/halftone-wordmark-footer'
 import { SYSTEMS } from '../data/systems.js'
 
 const _v = new THREE.Vector3()
@@ -37,6 +38,22 @@ export default function Home() {
   const leaveTimer = useRef()
   const panelRef = useRef()
   const panelHover = useRef(false)
+  const controlsRef = useRef()
+  const zoom = (factor) => {
+    const c = controlsRef.current
+    if (!c) return
+    const off = c.object.position.clone().sub(c.target)
+    off.setLength(THREE.MathUtils.clamp(off.length() * factor, 4, 11))
+    c.object.position.copy(c.target).add(off)
+    c.update()
+  }
+  const resetView = () => {
+    const c = controlsRef.current
+    if (!c) return
+    c.object.position.set(5.2, 2.3, 5.6)
+    c.target.set(0, 0.75, 0)
+    c.update()
+  }
 
   const over = useCallback((id) => {
     clearTimeout(leaveTimer.current)
@@ -58,6 +75,7 @@ export default function Home() {
   const active = activeId ? SYSTEMS[activeId] : null
 
   return (
+    <div className="page">
     <main className="home">
       <header className="topbar">
         <span className="brand">Anatomy</span>
@@ -65,6 +83,7 @@ export default function Home() {
           {['engine', 'brakes', 'suspension'].map((id) => (
             <Link key={id} to={`/explore/${id}`}>{SYSTEMS[id].name}</Link>
           ))}
+          <Link to="/systems">All systems</Link>
         </nav>
       </header>
 
@@ -88,6 +107,8 @@ export default function Home() {
           <Car hovered={hovered} pinned={pinned} onOver={over} onOut={out} onPick={pick} />
           <ContactShadows position={[0, 0, 0]} opacity={0.55} scale={12} blur={2.4} far={2.5} />
           <OrbitControls
+            ref={controlsRef}
+            enableZoom={false}
             target={[0, 0.75, 0]}
             enablePan={false}
             enableDamping
@@ -117,6 +138,28 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      <div className="view-controls" role="group" aria-label="Camera">
+        <button className="btn" onClick={() => zoom(0.8)} aria-label="Zoom in">+</button>
+        <button className="btn" onClick={() => zoom(1.25)} aria-label="Zoom out">−</button>
+        <button className="btn" onClick={resetView}>Reset</button>
+      </div>
     </main>
+    <HalftoneWordmarkFooter
+      wordmark="anatomy"
+      label="Anatomy"
+      meta="How cars work, part by part"
+      height="min(72svh, 560px)"
+      palette={{ background: '#0d1116', ink: '#ece8df', warm: '#ff7a2f' }}
+      fontFamily={'"Bricolage Grotesque", "Inter", system-ui, sans-serif'}
+      fontWeight={700}
+      dotGap={6}
+      columns={[
+        { title: 'Explore', links: [{ label: 'The car', href: '/' }, { label: 'All systems', href: '/systems' }] },
+        { title: 'Simulators', links: [{ label: 'Engine', href: '/explore/engine' }, { label: 'Brakes', href: '/explore/brakes' }, { label: 'Suspension', href: '/explore/suspension' }] },
+        { title: 'Project', links: [{ label: 'GitHub', href: 'https://github.com/GigaChad-Suryansh/Pieces-2.0' }] },
+      ]}
+    />
+    </div>
   )
 }
