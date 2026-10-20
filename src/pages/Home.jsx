@@ -1,0 +1,122 @@
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { ContactShadows, Environment, Lightformer, OrbitControls } from '@react-three/drei'
+import { Link } from 'react-router-dom'
+import * as THREE from 'three'
+import Car from '../car/Car.jsx'
+import { SYSTEMS } from '../data/systems.js'
+
+const _v = new THREE.Vector3()
+
+/** Projects a 3D anchor to screen space every frame and moves the DOM panel there. */
+function PanelTracker({ anchor, panelRef }) {
+  useFrame(({ camera, size }) => {
+    const el = panelRef.current
+    if (!el || !anchor) return
+    _v.set(...anchor).project(camera)
+    const x = (_v.x * 0.5 + 0.5) * size.width
+    const y = (-_v.y * 0.5 + 0.5) * size.height
+    el.style.transform = `translate(${x}px, ${y}px)`
+  })
+  return null
+}
+
+function Stage() {
+  return (
+    <Environment resolution={256} background={false}>
+      <Lightformer form="rect" intensity={2.2} position={[0, 5, 2]} scale={[10, 4, 1]} rotation-x={Math.PI / 2} />
+      <Lightformer form="rect" intensity={1.4} position={[-5, 1.5, 0]} scale={[6, 3, 1]} rotation-y={Math.PI / 2} />
+      <Lightformer form="rect" intensity={1.0} position={[5, 1, 3]} scale={[6, 3, 1]} rotation-y={-Math.PI / 2} color="#ffd9bf" />
+    </Environment>
+  )
+}
+
+export default function Home() {
+  const [hovered, setHovered] = useState(null)
+  const [pinned, setPinned] = useState(null)
+  const leaveTimer = useRef()
+  const panelRef = useRef()
+  const panelHover = useRef(false)
+
+  const over = useCallback((id) => {
+    clearTimeout(leaveTimer.current)
+    setHovered(id)
+    document.body.style.cursor = 'pointer'
+  }, [])
+  const out = useCallback(() => {
+    document.body.style.cursor = ''
+    clearTimeout(leaveTimer.current)
+    // Short grace period so the cursor can travel from the part onto the panel.
+    leaveTimer.current = setTimeout(() => {
+      if (!panelHover.current) setHovered(null)
+    }, 320)
+  }, [])
+  const pick = useCallback((id) => { setPinned(id); setHovered(id) }, [])
+  useEffect(() => () => { clearTimeout(leaveTimer.current); document.body.style.cursor = '' }, [])
+
+  const activeId = hovered ?? pinned
+  const active = activeId ? SYSTEMS[activeId] : null
+
+  return (
+    <main className="home">
+      <header className="topbar">
+        <span className="brand">Anatomy</span>
+        <nav className="topnav" aria-label="Systems">
+          {['engine', 'brakes', 'suspension'].map((id) => (
+            <Link key={id} to={`/explore/${id}`}>{SYSTEMS[id].name}</Link>
+          ))}
+        </nav>
+      </header>
+
+      <section className="hero-copy">
+        <h1>Discover how cars work.</h1>
+        <p className="hint">Hover over a part, or tap it on a touch screen.</p>
+      </section>
+
+      <div className="stage">
+        <Canvas
+          dpr={[1, 2]}
+          camera={{ position: [5.2, 2.3, 5.6], fov: 32, near: 0.1, far: 60 }}
+          onPointerMissed={() => setPinned(null)}
+          gl={{ antialias: true }}
+        >
+          <color attach="background" args={['#0d1116']} />
+          <fog attach="fog" args={['#0d1116', 9, 22]} />
+          <ambientLight intensity={0.35} />
+          <directionalLight position={[4, 6, 3]} intensity={1.3} />
+          <Stage />
+          <Car hovered={hovered} pinned={pinned} onOver={over} onOut={out} onPick={pick} />
+          <ContactShadows position={[0, 0, 0]} opacity={0.55} scale={12} blur={2.4} far={2.5} />
+          <OrbitControls
+            target={[0, 0.75, 0]}
+            enablePan={false}
+            enableDamping
+            minDistance={4}
+            maxDistance={11}
+            maxPolarAngle={Math.PI / 2 - 0.05}
+          />
+          {active && <PanelTracker anchor={active.anchor} panelRef={panelRef} />}
+        </Canvas>
+
+        {active && (
+          <div
+            className="panel-anchor"
+            ref={panelRef}
+            onPointerEnter={() => { panelHover.current = true; clearTimeout(leaveTimer.current) }}
+            onPointerLeave={() => { panelHover.current = false; out() }}
+          >
+            <span className="panel-dot" />
+            <div className="panel" role="dialog" aria-label={active.name}>
+              <strong>{active.name}</strong>
+              <p>{active.blurb}</p>
+              <Link className="panel-cta" to={`/explore/${active.id}`}>
+                {active.action} →
+              </Link>
+              {active.status !== 'live' && <small>Simulator in development</small>}
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
+  )
+}
