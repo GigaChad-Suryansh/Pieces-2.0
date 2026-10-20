@@ -33,7 +33,7 @@ jobs:
       # Pages has no server-side routing. Serving the app as 404.html makes deep links
       # such as /explore/engine load the app, which then routes client-side.
       - run: cp dist/index.html dist/404.html
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: dist
       - id: deployment
