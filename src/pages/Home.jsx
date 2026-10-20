@@ -32,6 +32,8 @@ function Stage() {
   )
 }
 
+const BASE = import.meta.env.BASE_URL
+
 export default function Home() {
   const [hovered, setHovered] = useState(null)
   const [pinned, setPinned] = useState(null)
@@ -155,8 +157,8 @@ export default function Home() {
       fontWeight={700}
       dotGap={6}
       columns={[
-        { title: 'Explore', links: [{ label: 'The car', href: '/' }, { label: 'All systems', href: '/systems' }] },
-        { title: 'Simulators', links: [{ label: 'Engine', href: '/explore/engine' }, { label: 'Brakes', href: '/explore/brakes' }, { label: 'Suspension', href: '/explore/suspension' }] },
+        { title: 'Explore', links: [{ label: 'The car', href: BASE }, { label: 'All systems', href: `${BASE}systems` }] },
+        { title: 'Simulators', links: [{ label: 'Engine', href: `${BASE}explore/engine` }, { label: 'Brakes', href: `${BASE}explore/brakes` }, { label: 'Suspension', href: `${BASE}explore/suspension` }] },
         { title: 'Project', links: [{ label: 'GitHub', href: 'https://github.com/GigaChad-Suryansh/Pieces-2.0' }] },
       ]}
     />
