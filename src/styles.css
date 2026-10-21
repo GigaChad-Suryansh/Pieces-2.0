@@ -76,6 +76,7 @@ button { font: inherit; color: inherit; }
 .cta.soon { background: transparent; color: inherit; border: 1px dashed currentColor; opacity: 0.7; font-weight: 500; cursor: default; }
 .cta.soon:hover { background: transparent; transform: none; }
 .cta.big { padding: 16px 28px; font-size: 1.05rem; }
+.cta { white-space: nowrap; }
 
 .finale { justify-content: center; align-items: flex-start; padding-top: 14svh; text-align: center; }
 .finale-copy { max-width: 34rem; }
@@ -102,6 +103,8 @@ button { font: inherit; color: inherit; }
   .finale { align-items: flex-start; }
   .tour dd { display: none; }
   .tour dl div { padding: 8px 0; }
-  .hero { align-items: flex-start; }
+  .hero { align-items: flex-start; padding-top: 14svh; }
+  .cta.big { padding: 14px 20px; font-size: 0.95rem; }
+  .hero-copy { background: color-mix(in srgb, var(--bg, var(--cream)) 70%, transparent); backdrop-filter: blur(8px); padding: 14px 16px; border-radius: 14px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

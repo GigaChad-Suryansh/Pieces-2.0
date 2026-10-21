@@ -9,16 +9,16 @@ export const INK = '#17332a'
 
 // Camera keyframes. shift: fraction of the screen width the car moves right (text sits on the other side).
 const KEYS = {
-  hero: { pos: [5.6, 2.5, 6.0], target: [0, 0.75, 0], shift: 0.16, mood: 0 },
-  engine: { pos: [4.3, 2.1, 3.1], target: [1.7, 0.85, 0], shift: 0.2, mood: 1 },
-  cooling: { pos: [4.7, 1.5, 2.3], target: [2.2, 0.75, 0], shift: -0.2, mood: 1 },
-  transmission: { pos: [2.9, 1.7, 3.5], target: [0.85, 0.65, 0], shift: 0.2, mood: 1 },
-  steering: { pos: [2.3, 2.3, 3.3], target: [0.8, 0.9, 0.2], shift: -0.2, mood: 1 },
-  brakes: { pos: [3.7, 1.1, 3.3], target: [1.45, 0.4, 0.7], shift: 0.2, mood: 1 },
-  suspension: { pos: [-3.3, 1.5, 3.4], target: [-1.15, 0.6, 0.55], shift: -0.2, mood: 1 },
-  'electric-motor': { pos: [-3.7, 2.1, 3.3], target: [-1.4, 0.5, 0], shift: 0.2, mood: 1 },
-  'electrical-system': { pos: [2.9, 2.5, -3.5], target: [1.2, 0.8, -0.45], shift: -0.2, mood: 1 },
-  finale: { pos: [-5.2, 2.6, 5.4], target: [0, 1.75, 0], shift: 0, mood: 0 },
+  hero: { pos: [5.6, 2.5, 6.0], target: [0, 0.75, 0], shift: 0.16, shiftY: -0.1, mood: 0 },
+  engine: { pos: [4.3, 2.1, 3.1], target: [1.7, 0.85, 0], shift: 0.2, shiftY: 0.2, mood: 1 },
+  cooling: { pos: [4.7, 1.5, 2.3], target: [2.2, 0.75, 0], shift: -0.2, shiftY: 0.2, mood: 1 },
+  transmission: { pos: [2.9, 1.7, 3.5], target: [0.85, 0.65, 0], shift: 0.2, shiftY: 0.2, mood: 1 },
+  steering: { pos: [2.3, 2.3, 3.3], target: [0.8, 0.9, 0.2], shift: -0.2, shiftY: 0.2, mood: 1 },
+  brakes: { pos: [3.7, 1.1, 3.3], target: [1.45, 0.4, 0.7], shift: 0.2, shiftY: 0.2, mood: 1 },
+  suspension: { pos: [-3.3, 1.5, 3.4], target: [-1.15, 0.6, 0.55], shift: -0.2, shiftY: 0.2, mood: 1 },
+  'electric-motor': { pos: [-3.7, 2.1, 3.3], target: [-1.4, 0.5, 0], shift: 0.2, shiftY: 0.2, mood: 1 },
+  'electrical-system': { pos: [2.9, 2.5, -3.5], target: [1.2, 0.8, -0.45], shift: -0.2, shiftY: 0.2, mood: 1 },
+  finale: { pos: [-5.2, 2.6, 5.4], target: [0, 1.75, 0], shift: 0, shiftY: -0.1, mood: 0 },
 }
 // Tour stops sit further back and further to the side so the text never covers the car.
 for (const id of Object.keys(KEYS)) {
@@ -69,6 +69,7 @@ export function useScrollScene(rootRef, onActive) {
         scene.target[k] = lerp(a.target[k], b.target[k], t)
       }
       scene.shift = lerp(a.shift, b.shift, t)
+      scene.shiftY = lerp(a.shiftY, b.shiftY, t)
       scene.mood = lerp(a.mood, b.mood, t)
       if (Math.abs(scene.mood - lastMood) > 0.002) {
         const bg = mix(CREAM, GREEN, scene.mood)
